@@ -1,0 +1,62 @@
+# =========================
+# Python cache / bytecode
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Virtual environments
+# =========================
+venv/
+.env/
+.env.*
+.venv/
+ENV/
+env/
+
+# =========================
+# Distribution / packaging
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# =========================
+# Test / coverage
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE folders
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# Project-specific outputs
+# =========================
+emails.xlsx
+output/
+*.csv
+*.xlsx
+
+# =========================
+# aiohttp / runtime temp
+# =========================
+*.pid

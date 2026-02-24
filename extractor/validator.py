@@ -2,7 +2,7 @@
 Validator module for validating and fixing input URLs.
 """
 
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 
 def validate_and_fix_url(url: str) -> str:
@@ -13,7 +13,7 @@ def validate_and_fix_url(url: str) -> str:
         url: Raw URL input from the user
 
     Returns:
-        A valid URL string with scheme
+        A valid normalized URL string
 
     Raises:
         ValueError: If the URL is invalid
@@ -23,12 +23,26 @@ def validate_and_fix_url(url: str) -> str:
 
     url = url.strip()
 
+    # Add scheme if missing
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
 
     parsed = urlparse(url)
 
-    if not parsed.netloc:
+    # Basic host validation
+    if not parsed.netloc or "." not in parsed.netloc:
         raise ValueError("Invalid URL provided.")
 
-    return url
+    # Normalize host to lowercase
+    netloc = parsed.netloc.lower()
+
+    # Remove fragment
+    normalized = parsed._replace(netloc=netloc, fragment="")
+
+    final_url = urlunparse(normalized)
+
+    # Remove trailing slash (except root)
+    if final_url.endswith("/") and parsed.path == "":
+        final_url = final_url.rstrip("/")
+
+    return final_url
