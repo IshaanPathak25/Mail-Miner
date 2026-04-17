@@ -1,0 +1,20 @@
+{
+    "start_url": "https://www.nits.ac.in/",
+    "total_pages_crawled": 20,
+    "total_emails_found": 321,
+    "unique_emails": 300,
+    "crawl_depth": 2,
+    "top_email_domains": {
+        "civil.nits.ac.in": 45,
+        "mech.nits.ac.in": 39,
+        "ece.nits.ac.in": 33,
+        "ee.nits.ac.in": 32,
+        "cse.nits.ac.in": 25,
+        "nits.ac.in": 24,
+        "ei.nits.ac.in": 17,
+        "math.nits.ac.in": 16,
+        "gmail.com": 10,
+        "hum.nits.ac.in": 10
+    },
+    "timestamp": "2026-04-17T18:31:15.495443"
+}

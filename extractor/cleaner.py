@@ -1,9 +1,5 @@
-"""
-Cleaner module for deduplicating and cleaning email addresses.
-"""
-
 import re
-from typing import List
+from typing import List, Tuple
 
 JUNK_EXTENSIONS = (
     ".png", ".jpg", ".jpeg", ".svg", ".css", ".js",
@@ -22,16 +18,19 @@ def _normalize(email: str) -> str:
     return email.lower().strip().strip(TRAILING_CHARS)
 
 
-def clean_emails(emails: List[str]) -> List[str]:
+def clean_emails(data: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
     """
-    Clean and deduplicate a list of email addresses.
+    Clean and deduplicate (email, source_url) pairs.
+
+    - Keeps same email if found on different pages
+    - Removes exact duplicate pairs
     """
-    if not emails:
+    if not data:
         return []
 
     cleaned = set()
 
-    for email in emails:
+    for email, source in data:
         if not email:
             continue
 
@@ -41,10 +40,11 @@ def clean_emails(emails: List[str]) -> List[str]:
         if normalized.endswith(JUNK_EXTENSIONS):
             continue
 
-        # Basic sanity filter (cheap but effective)
+        # Basic sanity filter
         if not BASIC_EMAIL_SANITY.match(normalized):
             continue
 
-        cleaned.add(normalized)
+        cleaned.add((normalized, source))
 
-    return sorted(cleaned)
+    # Sort by email for consistency
+    return sorted(cleaned, key=lambda x: x[0])
