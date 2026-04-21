@@ -51,15 +51,14 @@ Thumbs.db
 # =========================
 # Project-specific outputs
 # =========================
-emails.xlsx
 output/
 *.csv
 *.xlsx
+*_emails.xlsx
+*_report.json
+*_crawl_log.json
 
 # =========================
 # aiohttp / runtime temp
 # =========================
 *.pid
-
-.venv/
-venv/
