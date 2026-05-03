@@ -1,190 +1,195 @@
-# Web Email Extractor
+# MailMiner — Web Email Extractor
 
-A lightweight Python-based tool that automatically extracts email addresses from websites and exports them into clean Excel files.
+A **production-grade, async web crawler** that extracts emails from websites using intelligent prioritization, concurrency, and structured outputs — available via both **CLI and live web app**.
 
-## Overview
+🌐 **Live App**: https://mail-miner.onrender.com/  
+💻 **GitHub**: https://github.com/IshaanPathak25/Mail-Miner
 
-Web Email Extractor is a simple, reliable tool designed to solve a practical problem: converting unstructured web content into usable, structured email data with minimal effort. It takes a single website URL as input, identifies all valid email addresses on the page, cleans and deduplicates the data, and generates a professional Excel spreadsheet ready for immediate use.
+---
 
-## Features
+## 🚀 Overview
 
-- **Simple Input**: Just provide a website URL
-- **Comprehensive Extraction**: Finds emails in both text content and mailto links
-- **Smart Validation**: Filters out invalid or malformed email addresses
-- **Automatic Deduplication**: Removes duplicate entries automatically
-- **Excel Export**: Generates clean, formatted Excel files with metadata
-- **Error Handling**: Clear error messages and recovery guidance
-- **No Complexity**: Straightforward design with predictable behavior
+MailMiner is an advanced email extraction system designed to transform unstructured web content into structured, usable data.
 
-## Installation
+Unlike basic scrapers, it features:
+- **Async concurrent crawling**
+- **Priority-based URL traversal**
+- **Source-aware email tracking**
+- **Analytics and crawl reporting**
+- **CLI + Web interface**
 
-### Prerequisites
+---
 
-- Python 3.7 or higher
-- pip (Python package manager)
+## ⚡ Features
 
-### Setup
+### 🔍 Intelligent Crawling
+- Async crawling using `asyncio + aiohttp`
+- Configurable worker pool for concurrency
+- Domain-restricted crawling
+- Depth and page-limit control
 
-1. Clone or download this repository:
-   ```bash
-   cd web-email-extractor
-   ```
+### 🧠 Priority-Based Extraction
+- High-value pages prioritized:
+  - `contact`, `faculty`, `directory`, `staff`
+- Low-value pages deprioritized:
+  - `gallery`, `events`, `news`
 
-2. Install required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 📧 Email Extraction
+- Extracts from:
+  - Page text (regex)
+  - `mailto:` links
+- Source tracking:
+  email → source URL(s)
 
-## Usage
 
-### Basic Usage
+### 📊 Structured Outputs
+- Excel export (`.xlsx`)
+- Crawl report (`report.json`)
+- Crawl log (`crawl_log.json`)
 
-Extract emails from a website:
+### 🖥️ Dual Interface
+
+#### CLI Mode
 ```bash
 python main.py https://example.com
 ```
 
-This will create a file named `extracted_emails.xlsx` in the current directory.
+#### Web App
+- Clean UI
+- Download Options:
+  - Excel
+  - Excel + report
+  - Excel + report + crawl log
 
-### Specify Output File
+### 🧰 Tech Stack
+- Backend: Python, FastAPI
+- Concurrency: asyncio, aiohttp
+- Parsing: BeautifulSoup, lmxl
+- Data Processing: Regex
+- Export: openpyxl
+- Deployment: Render
+- Frontend: HTML
 
-Custom output file name:
-```bash
-python main.py https://example.com -o my_emails.xlsx
-```
+### 🚀 Usage
+#### CLI Usage:
+- Basic
+  ```bash
+  python main.py https://example.com
+  ```
+- Full Control
+  ```bash
+  python main.py https://example.com \
+  --depth 3 \
+  --max-pages 50 \
+  --workers 12 \
+  --output-dir ./results \
+  --verbose
+  ```
+- Summary Only
+  ```bash
+  python main.py https://example.com --only-summary
+  ```
 
-Or using the long form:
-```bash
-python main.py https://example.com --output company_contacts.xlsx
-```
+- Top Pages Insight
+  ```bash
+  python main.py https://example.com --top-pages 5
+  ```
 
-### Without URL Scheme
+### 📊 Output Format
+1. Excel File
+   | Email | Source URL |
 
-The tool automatically adds `https://` if you forget:
-```bash
-python main.py example.com
-```
+2. Crawl Report (report.json)
+   ```json
+   {
+      "total_pages_crawled": 20,
+      "total_emails_found": 321,
+      "unique_emails": 300,
+      "top_email_domains": {
+        "nitt.edu": 120
+      }
+   }
+   ```
+3. Crawl Log (crawl_log.json)
+   ```json
+   [
+     {
+       "url": "...",
+       "depth": 2,
+       "emails_found": 12
+     }
+   ]
+   ```
 
-## Output Format
+### 🧠 How It Works
+Pipeline
+1. Fetch — Async page retrieval
+2. Parse — Extract emails via regex + HTML parsing
+3. Clean — Normalize and deduplicate
+4. Track — Map emails to source pages
+5. Prioritize — Rank URLs dynamically
+6. Export — Generate structured outputs
 
-The tool generates an Excel file with two sheets:
-
-### 1. Email Addresses Sheet
-- **No.**: Sequential numbering
-- **Email Address**: The extracted email address
-
-Emails are:
-- Converted to lowercase
-- Sorted alphabetically
-- Deduplicated
-- Validated for proper format
-
-### 2. Metadata Sheet
-Contains extraction details:
-- Total number of emails found
-- Extraction date and time
-- Source URL
-
-## Project Structure
-
+### 📁 Project Structure
 ```
 web-email-extractor/
 │
-├── main.py                 # CLI interface and entry point
-├── requirements.txt        # Project dependencies
-├── README.md              # Documentation
+├── app.py                 # FastAPI web server
+├── main.py                # CLI entry point
+├── requirements.txt
+├── Procfile
 │
-└── extractor/             # Core extraction package
-    ├── __init__.py        # Package orchestration
-    ├── fetcher.py         # Webpage retrieval
-    ├── parser.py          # Email pattern extraction
-    ├── validator.py       # Email validation
-    ├── cleaner.py         # Deduplication and cleaning
-    └── exporter.py        # Excel file generation
+├── templates/             # Web UI
+│   └── index.html
+│
+└── extractor/
+    ├── crawler.py
+    ├── fetcher.py
+    ├── parser.py
+    ├── cleaner.py
+    ├── exporter.py
+    ├── validator.py
+    └── cli.py
 ```
 
-## How It Works
+### ⚠️ Limitations
+- No JavaScript rendering (static HTML only)
+- Performance depends on target website structure
+- Free-tier deployment may timeout on large crawls
 
-The extraction process follows a clear pipeline:
+### 🔮 Future Improvements
+- Adaptive crawling (self-learning priorities)
+- JavaScript rendering (Playwright fallback)
+- Email classification (personal vs institutional)
+- UI-based result preview before download
 
-1. **Fetch**: Retrieves the webpage content using HTTP requests
-2. **Parse**: Extracts email patterns using regex and BeautifulSoup
-3. **Validate**: Filters out invalid email addresses
-4. **Clean**: Deduplicates and normalizes the results
-5. **Export**: Generates a formatted Excel file
+### 🧪 Example Use Cases
+- Academic institution email extraction
+- Lead generation
+- Directory scraping
+- Data collection for research
 
-## Error Handling
-
-The tool provides clear error messages and guidance:
-
-- **Connection errors**: Checks URL format and internet connectivity
-- **Invalid URLs**: Suggests adding `https://` prefix
-- **No emails found**: Informs when no valid emails are detected
-- **File permission errors**: Checks if output file is open elsewhere
-
-## Dependencies
-
-- **requests** (>=2.31.0): HTTP library for fetching webpages
-- **beautifulsoup4** (>=4.12.0): HTML parsing and text extraction
-- **lxml** (>=4.9.0): Fast XML and HTML parser
-- **openpyxl** (>=3.1.0): Excel file creation and formatting
-
-## Limitations
-
-- Extracts only from the initial page load (no JavaScript execution)
-- Does not follow links or crawl multiple pages
-- Email addresses must be in standard format
-- Respects standard HTTP timeout limits
-
-## Examples
-
-### Example 1: Company Contact Page
+### 📦 Installation
 ```bash
-python main.py https://company.com/contact
+git clone https://github.com/IshaanPathak25/web-email-extractor
+cd web-email-extractor
+pip install -r requirements.txt
 ```
 
-### Example 2: About Page
+### ▶️ Run Locally
+CLI
 ```bash
-python main.py https://organization.org/about -o team_emails.xlsx
+python main.py https://example.com
 ```
 
-### Example 3: Simple Domain
+Web App
 ```bash
-python main.py example.com
+uvicorn app:app --reload
 ```
 
-## Requirements File
-
-The `requirements.txt` includes:
-```
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-openpyxl>=3.1.0
-lxml>=4.9.0
-```
-
-## License
-
-This project is provided as-is for educational and practical use.
-
-## Version
-
-Current version: **1.0.0**
-
-## Support
-
-If you encounter issues:
-1. Verify your Python version (3.7+)
-2. Ensure all dependencies are installed
-3. Check your internet connection
-4. Verify the target URL is accessible
-5. Make sure the output file isn't open in Excel
-
-## Contributing
-
-This is a focused, single-purpose tool. The design prioritizes simplicity and reliability over feature expansion.
-
----
-
-**Web Email Extractor** - Simple, predictable, and reliable email extraction.
-
+### 🧠 Key Highlights
+- Async architecture for high efficiency
+- Priority-based crawling for smarter extraction
+- Source-aware email tracking
+- Deployable web interface
+- Modular, scalable design
