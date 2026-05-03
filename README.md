@@ -122,7 +122,7 @@ python main.py https://example.com
    ```
 
 ### 🧠 How It Works
-Pipeline
+#### Pipeline
 1. Fetch — Async page retrieval
 2. Parse — Extract emails via regex + HTML parsing
 3. Clean — Normalize and deduplicate
@@ -177,12 +177,12 @@ pip install -r requirements.txt
 ```
 
 ### ▶️ Run Locally
-CLI
+#### CLI
 ```bash
 python main.py https://example.com
 ```
 
-Web App
+#### Web App
 ```bash
 uvicorn app:app --reload
 ```
