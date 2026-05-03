@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Extractor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            width: 420px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        input {
+            background: #334155;
+            color: white;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+
+        /* ✅ FIXED CHECKBOX ALIGNMENT */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin: 0;
+        }
+
+        .status {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Web Email Extractor</h2>
+
+    <form id="form">
+        <input type="text" name="url" placeholder="Enter website URL" required>
+
+        <label>Depth</label>
+        <input type="number" name="depth" value="2">
+
+        <label>Max Pages</label>
+        <input type="number" name="max_pages" value="20">
+
+        <!-- ✅ Fixed alignment -->
+        <div class="checkbox-group">
+            <input type="checkbox" name="report" checked>
+            <span>Include Report</span>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" name="log" checked>
+            <span>Include Crawl Log</span>
+        </div>
+
+        <button id="submitBtn" type="submit">Start & Download</button>
+    </form>
+
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+    const form = document.getElementById("form");
+    const status = document.getElementById("status");
+    const btn = document.getElementById("submitBtn");
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        // ✅ Proper loading state
+        status.innerText = "⏳ Crawling... this may take a few seconds";
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+
+        try {
+            const response = await fetch("/download", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    url: formData.get("url"),
+                    depth: Number(formData.get("depth")),
+                    max_pages: Number(formData.get("max_pages")),
+                    include_report: formData.get("report") !== null,
+                    include_log: formData.get("log") !== null
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Server error");
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "result.zip";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            status.innerText = "✅ Download started!";
+        } catch (err) {
+            status.innerText = "❌ Something went wrong";
+            console.error(err);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Start & Download";
+        }
+    };
+</script>
+
+</body>
+</html>
